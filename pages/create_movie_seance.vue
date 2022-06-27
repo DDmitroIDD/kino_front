@@ -22,7 +22,7 @@
                 <div class="md-form mb-0">
                   <label for="movie_title" class="sr-only">Movie title</label>
                   <input id="movie_title" type="text" class="form-control" placeholder="Movie title"
-                         v-model="form.movie_title" @input="$v.form.movie_title.$touch">
+                         v-model="form.movie" @input="$v.form.movie_title.$touch">
                 </div>
                 <span class="msg-error" v-if="!$v.form.movie_title.required">
             <small>This field is required!</small>
@@ -45,7 +45,7 @@
                 <div class="md-form mb-0">
                   <label for="movie_title" class="sr-only">Movie title</label>
                   <input id="movie_title" type="text" class="form-control" placeholder="Movie title"
-                         v-model="form.movie_title" @input="$v.form.movie_title.$touch">
+                         v-model="form.movie" @input="$v.form.movie_title.$touch">
                 </div>
                 <span class="msg-error" v-if="!$v.form.movie_title.required">
                   <small>This field is required!</small>
@@ -79,7 +79,7 @@ export default {
   name: "create_movie_seance",
   async asyncData() {
     try {
-      const {data} = await axios.get('http://localhost:8000/cinema_halls/');
+      const {data} = await axios.get('http://localhost:8000/api/cinema/');
       console.log(data)
       return {
         halls: data,
@@ -93,7 +93,7 @@ export default {
   },
   data() {
     return {
-      message: self.message,
+      message: this.message,
       title: 'Fill the form!',
       form: {
         movie_title: '',
@@ -115,12 +115,11 @@ export default {
 
     async createMovieSeance() {
       try {
-        let self = this;
-        let response = await this.$axios.post('/movie_seances/', {
+        let response = await this.$axios.post('/movie/', {
           movie_title: this.form.movie_title,
           show_hall: this.form.show_hall
         }).then(response => {
-          self.message = 'You are created a new movie seance!'
+          this.message = 'You are created a new movie seance!'
         })
         console.log(response)
         await this.$router.push('/create_movie_seance/')

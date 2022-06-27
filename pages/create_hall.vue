@@ -69,7 +69,7 @@ export default {
   name: "create_hall",
   data() {
     return {
-      message: self.message,
+      message: this.message,
       title: 'Fill the form!',
       form: {
         hall_name: '',
@@ -87,12 +87,11 @@ export default {
   methods: {
       async createHall() {
         try {
-          let self = this;
-          let response = await this.$axios.post('/cinema_halls/', {
+          let response = await this.$axios.post('/cinema/', {
             hall_name: this.form.hall_name,
             hall_size: this.form.hall_size
           }).then(response => {
-            self.message = 'You are created a new hall!'
+            this.message = 'You are created a new hall!'
           })
           console.log(response)
           await this.$router.push('/create_hall/')

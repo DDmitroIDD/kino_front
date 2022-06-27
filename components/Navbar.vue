@@ -26,13 +26,12 @@
         <button class="btn btn-outline-success my-2 my-sm-0 mr-2" type="submit" @click.stop.prevent="submit()">Search</button>
       </form>
       <client-only>
-
-        <span class="navbar-text mr-2 text-center" v-if="user">
-          <img class="d-flex mr-3 rounded-circle" :src="user.avatar" width="40" height="40" alt="">
+        <span class="navbar-text mr-2" v-if="user">
+          <img class="d-flex mr-3 rounded-circle" :src="user.avatar" width="40" height="40" alt="AVATAR">
           {{ user.username }}
         </span>
 
-        <span class=" mr-2" v-if="user.is_staff">
+        <span class=" mr-2" v-if="user && user.is_staff">
           <nuxt-link class="btn btn-outline-light" to="/create_hall">Create hall</nuxt-link>
           <nuxt-link class="btn btn-outline-light" to="/create_movie_seance">Create movie seance</nuxt-link>
         </span>
@@ -48,7 +47,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
 export default {
   name: "Navbar",
 

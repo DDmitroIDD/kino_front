@@ -1,8 +1,10 @@
 <template>
   <div>
+    <div  class="text-danger">
+      <Header :head_for_feet="message"/>
+    </div>
     <div class="text-center">
       <form class="form-login" @submit.prevent="userLogin">
-        <h1 class="h3 mb-3 mt-3 font-weight-normal">Please enter your username and password</h1>
         <label for="inputUsername" class="sr-only">username</label>
         <input id="inputUsername" class="form-control" placeholder="username" required="" v-model="login.username">
         <label for="inputPassword" class="sr-only">password</label>
@@ -14,10 +16,14 @@
 </template>
 
 <script>
+import Header from "../components/Header";
+
 export default {
+  components: {Header},
   layout: "movie_detail",
   data() {
     return {
+      message: this.message ? this.message : 'Please enter your username and password',
       login: {
         username: '',
         password: ''
@@ -29,10 +35,9 @@ export default {
       try {
         let response = await this.$auth.loginWith('local', { data: this.login })
         console.log(response)
-        // console.log(this.$auth.hasScope('is_superuser'))
-        // console.log(this.$store.state.auth.user)
         this.$router.push('/')
       } catch (err) {
+        this.message = err.response.data.detail
         console.log(err)
       }
     }

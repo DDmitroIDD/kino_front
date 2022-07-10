@@ -1,11 +1,7 @@
 <template>
   <div>
-    <div v-if="!message">
-    <Header :head_for_feet="title" />
-    </div>
-    <div v-if="message">
-      <Header :head_for_feet="message" />
-    </div>
+      <Header v-if="message" :message="message" />
+      <Header v-else-if="!message" :message="title" />
     <div class="container">
       <div class="row">
         <div class="col-lg-12">
@@ -91,13 +87,12 @@ export default {
             hall_name: this.form.hall_name,
             hall_size: this.form.hall_size
           }).then(response => {
-            this.message = 'You are created a new hall!'
+            this.message = response.statusText;
           })
-          console.log(response)
           await this.$router.push('/create_hall/')
 
         }catch (err) {
-          console.log(err)
+          this.message = err.response.data.hall_name[0];
         }
       }
     // createHall() {

@@ -37,7 +37,7 @@ export const actions = {
 
 
     commit('SET_MOVIES', data.results)
-    commit('SET_TOTAL', Math.ceil(data.count / 6))
+    commit('SET_TOTAL', Math.ceil(data.count / 8))
     commit('SET_NEXT', next)
     commit('SET_PREVIOUS', previous)
     commit('SET_CURRENT_PAGE', Number(current_page))

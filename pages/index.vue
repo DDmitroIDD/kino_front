@@ -2,16 +2,18 @@
   <div class="container">
     <h1 class="my-3">Actuality movies!!!</h1>
       <div class="row">
-        <div v-for="movie in movies" :key="movie.slug" class="col-md-3">
+        <div v-for="movie in movies" :key="movie.id" class="col-md-3">
           <div class="card mb-4 shadow-sm">
-            <nuxt-link :to="`/movie/${movie.slug}`">
-            <img :src="movie.image" alt="movie.movie_title" class="card-img-top" width="300" height="350">
+            <nuxt-link :to="`/movie/${movie.id}`">
+            <img :src="movie.image" alt="movie.movie" class="card-img-top" width="300" height="350">
             </nuxt-link>
 
             <div class="card-body text-primary">
               <h2 class="card-title">{{ movie.movie }}</h2>
-              <h5>Start time: {{movie.start_datetime.slice(0, 16)}}</h5>
-              <h5>End time: {{movie.end_datetime.slice(0, 16)}}</h5>
+              <h5>Show Date: {{movie.start_datetime.slice(0, 10)}}</h5>
+              <h5>Start time: {{movie.start_datetime.slice(11, 16)}}</h5>
+              <h5>End time: {{movie.end_datetime.slice(11, 16)}}</h5>
+              <h5>Hall: {{movie.hall}}</h5>
               <div class="mb-2">
                 <span v-for="tag in movie.tag">
                   <nuxt-link :to="`/tags/${tag}`" class="mr-1 badge badge-info">#{{tag}}</nuxt-link>

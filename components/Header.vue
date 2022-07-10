@@ -9,6 +9,8 @@
               {{ head_for_feet }}
               {{ slug }}
               {{ movie_count }}
+              {{ errors }}
+              {{ message }}
             </h1>
           </div>
         </div>
@@ -20,7 +22,7 @@
 <script>
 export default {
   name: "Header",
-  props: ["movie_title", "head_for_feet", "slug", "movie_count"]
+  props: ["movie_title", "head_for_feet", "slug", "movie_count", "errors", "message"]
 
 }
 </script>

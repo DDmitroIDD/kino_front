@@ -14,9 +14,9 @@
       <h5 class="card-header">last movies</h5>
       <div class="card-body" v-for="movie in lastFive" :key="movie.id">
 
-        <h5 class="card-title">{{movie.movie_title}}</h5>
-        <nuxt-link :to="`${movie.slug}`" class="card-link">
-        <img :src="movie.image" alt=movie.movie_title class="card-img-top">
+        <h5 class="card-title">{{movie.movie}}</h5>
+        <nuxt-link :to="`${movie.id}`" class="card-link">
+        <img :src="movie.image" alt=movie.movie class="card-img-top">
         </nuxt-link>
         <div v-html="movie.description" class="text-truncate"></div>
       <hr>

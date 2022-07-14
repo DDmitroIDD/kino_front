@@ -1,5 +1,5 @@
 <template>
-  <div v-if="user && user.is_stuff">
+  <div v-if="user && user.is_staff">
     <div>
       <Header :head_for_feet="message" />
     </div>
@@ -157,7 +157,6 @@ export default {
   async asyncData() {
     try {
       const {data} = await axios.get('http://localhost:8000/api/cinema/');
-      console.log(data)
       return {
         halls: data,
       }
@@ -236,7 +235,7 @@ export default {
     form: {
       movie: {
         required,
-        minLength: minLength(5)
+        minLength: minLength(2)
       },
       hall: {
         required,

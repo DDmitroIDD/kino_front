@@ -21,9 +21,9 @@
             </nuxt-link>
 
             <div class="card-body text-primary">
-              <h2 class="card-title">{{ movie.movie_title }}</h2>
-              <h5>Start time: {{movie.start_time_seance.slice(0, 5)}}</h5>
-              <h5>End time: {{movie.end_time_seance.slice(0, 5)}}</h5>
+              <h2 class="card-title">{{ movie.movie }}</h2>
+              <h5>Start time: {{movie.start_datetime.slice(0, 5)}}</h5>
+              <h5>End time: {{movie.end_datetime.slice(0, 5)}}</h5>
               <div class="mb-2">
                 <span v-for="tag in movie.tag">
                   <nuxt-link :to="`/tags/${tag}`" class="mr-1 badge badge-info">#{{tag}}</nuxt-link>
@@ -48,7 +48,7 @@ export default {
   layout: "movie_detail",
   watchQuery: ['q'],
   async asyncData({route}) {
-    const { data } = await axios.get(`http://localhost:8000/movie_seances/?q=${route.query.q}`);
+    const { data } = await axios.get(`http://localhost:8000/api/movie/?q=${route.query.q}`);
     return {
 
       movies: data,

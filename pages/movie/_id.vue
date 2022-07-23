@@ -22,16 +22,16 @@
           </span>
         </div>
         <hr>
-        <div class="text-primary">
-          <p class="font-weight-bold">Hall: {{movie.hall}}</p>
-          <p class="font-weight-bold">Date: {{movie.start_datetime.slice(0, 10)}}</p>
-          <p class="font-weight-bold">Start seance: {{movie.start_datetime.slice(11, 16)}}</p>
-          <p class="font-weight-bold">End seance: {{movie.end_datetime.slice(11, 16)}}</p>
-          <p class="font-weight-bold">Movie duration: {{minutes}} min</p>
-          <p class="font-weight-bold">Free seats: {{movie.qyt}}</p>
-          <p class="font-weight-bold">Price: {{movie.price}}</p>
+        <div class="text-primary font-weight-bold">
+          <p>Hall: {{movie.hall}}</p>
+          <p>Date: {{movie.start_datetime.slice(0, 10)}}</p>
+          <p>Start seance: {{movie.start_datetime.slice(11, 16)}}</p>
+          <p>End seance: {{movie.end_datetime.slice(11, 16)}}</p>
+          <p>Movie duration: {{minutes}} min</p>
+          <p>Free seats: {{movie.qyt}}</p>
+          <p>Price: {{movie.price}}</p>
           <div>
-            <form @submit.prevent="createTickets">
+            <form @submit.prevent="createTickets" v-if="user && !user.is_staff">
               <div class="row form-group">
                 <div class="col-md-6" v-bind:class="{ 'fld-error': $v.form.qt.$error }">
                   <div class="md-form mb-0">
@@ -52,6 +52,12 @@
                         :disabled='!isCompleted'>Buy</button>
               </div>
             </form>
+            <div class="text-center text-md-left mt-3" v-if="user && user.is_staff">
+              <nuxt-link :to="`/movie_for_update/${movie.slug}`">
+                <button class="btn btn-primary" type="submit">Change movie</button>
+              </nuxt-link>
+            </div>
+
           </div>
         </div>
         <hr>
@@ -77,7 +83,8 @@ export default {
 
   layout: "movie_detail",
   async asyncData({params}) {
-    const movie = await axios.get(`http://127.0.0.1:8000/api/movie/${params.slug}`);
+    console.log(params)
+    const movie = await axios.get(`http://127.0.0.1:8000/api/movie/${params.id}`);
     const tags = await axios.get(`http://127.0.0.1:8000/api/tags/`);
     const lastFive = await axios.get(`http://127.0.0.1:8000/api/last_five/`);
     let start = (movie.data.start_datetime);
@@ -110,7 +117,7 @@ export default {
 
   },
   methods: {
-    async updateMovie() {
+    async changeMovie() {
 
     },
     async createTickets() {

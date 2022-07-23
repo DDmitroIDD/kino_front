@@ -14,9 +14,9 @@
       </nav>
       <div class="row">
 <!--        {{movies}}-->
-        <div v-for="movie in movies.results" :key="movie.slug" class="col-md-3">
+        <div v-for="movie in movies.results" :key="movie.id" class="col-md-3">
           <div class="card mb-4 shadow-sm">
-            <nuxt-link :to="`/movie_seances/${movie.slug}`">
+            <nuxt-link :to="`/movie/${movie.id}`">
               <img :src="movie.image" alt="movie.movie_title" class="card-img-top" width="300" height="350">
             </nuxt-link>
 

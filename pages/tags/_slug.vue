@@ -60,9 +60,6 @@ export default {
   Layout: "movie_detail",
   watchQuery: ['page'],
   computed: {
-    // ...mapState({movies: 'tags/_slug/movies', total: 'tags/_slug/total', next: 'tags/_slug/next',
-    //   previous: 'tags/_slug/previous', current_page: 'tags/_slug/current_page', tags: 'tags/_slug/tags',
-    //   slug: 'tags/_slug/slug',}),
     ...mapState('tags/_slug', ["movies", "slug", "tags", "current_page", "next", "total", "previous"])
   },
   async fetch({store, route}) {
@@ -73,45 +70,6 @@ export default {
     })
 
   },
-  methods: {
-    test() {
-      console.log(this.movies)
-    }
-  }
-  // head() {
-  //   return {
-  //     title: 'This is main page',
-  //     meta: [
-  //       { hid: 'description', name: 'description', content: 'This is description'},
-  //       { hid: 'keywords', name: 'keywords', content: 'keyword 1, keyword 2'},
-  //     ]
-  //   }
-  // },
-  // async asyncData({params, route}) {
-  //   const { data } = await axios.get(`http://127.0.0.1:8000/api/tags/${params.slug}/`);
-  //   const tags = await axios.get(`http://127.0.0.1:8000/api/tags/`);
-  //   let query_page = route.query.page
-  //   let page = query_page !== undefined ? `?page=${query_page}` : '';
-  //   let next = data.next != null ? data.next.split('/')[5] : data.next;
-  //   let previous = data.previous != null ? data.previous.split('/')[5] : data.previous;
-  //   let current_page = query_page
-  //   console.log(data)
-  //   console.log(next)
-  //   console.log(Number(current_page))
-  //   return {
-  //     movies: data.results,
-  //     title: `#${params.slug}`,
-  //     tags: tags.data,
-  //     page: page,
-  //     next: next,
-  //     previous: previous,
-  //     current_page: Number(current_page),
-  //     total: Math.ceil(data.count / 8)
-  //
-  //   }
-  //
-  // },
-
 
   }
 </script>

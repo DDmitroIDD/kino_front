@@ -40,7 +40,6 @@ export const actions = {
     let tag = tag_param !== undefined ? `${tag_param}` : '';
     const tags = await this.$axios.get(`/tags/`);
     const {data} = await this.$axios.get(`/tags/${tag}/${page}`);
-    console.log(tags)
 
     let slug = tag_param
 

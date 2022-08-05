@@ -24,26 +24,74 @@
         <hr>
         <div class="text-primary font-weight-bold">
           <p>Hall: {{movie.hall}}</p>
+          <div v-if="!user || user && !user.is_staff">
           <p>Date: {{movie.start_datetime.slice(0, 10)}}</p>
           <p>Start seance: {{movie.start_datetime.slice(11, 16)}}</p>
           <p>End seance: {{movie.end_datetime.slice(11, 16)}}</p>
+          <p>Price: {{movie.price}}</p>
+          </div>
+          <div v-if="user && user.is_staff">
+            <form @submit.prevent="changeMovie">
+            <!--              Start_datetime start!!! -->
+            <div class="col-md-6" v-bind:class="{ 'fld-error': $v.form.start_datetime.$error }">
+              <div class="md-form mb-0">
+                Start datetime
+                <label for="start_datetime" class="sr-only">Start datetime</label>
+                <input id="start_datetime" type="datetime-local" class="form-control" placeholder="Start_datetime"
+                       v-model="form.start_datetime" @input="$v.form.start_datetime.$touch">
+              </div>
+              <span class="msg-error" v-if="!$v.form.start_datetime.required">
+                  <small>This field is required!</small>
+                </span>
+            </div>
+            <!--              Start_datetime end!!! -->
+            <!--              end_datetime start!!!-->
+            <div class="col-md-6" v-bind:class="{ 'fld-error': $v.form.end_datetime.$error }">
+              <div class="md-form mb-0">
+                End datetime
+                <label for="end_datetime" class="sr-only">End datetime</label>
+                <input id="end_datetime" type="datetime-local" class="form-control" placeholder="End_datetime"
+                       v-model="form.end_datetime" @input="$v.form.end_datetime.$touch">
+              </div>
+              <span class="msg-error" v-if="!$v.form.end_datetime.required">
+                  <small>This field is required!</small>
+                </span>
+            </div>
+            <!--              end_datetime end!!! -->
+            <!--              Price start!!! -->
+            <div class="col-md-6" v-bind:class="{ 'fld-error': $v.form.price.$error }">
+              <div class="md-form mb-0">
+                <label for="price" class="sr-only">Price</label>
+                <input id="price" type="number" class="form-control" placeholder="Price"
+                       v-model="form.price" @input="$v.form.price.$touch">
+              </div>
+              <span class="msg-error" v-if="!$v.form.price.required">
+                  <small>This field is required!</small>
+                </span>
+              <span class="msg-error" v-if="!$v.form.price.minValue">
+            <small>Price could be {{ $v.form.price.$params.minValue.min }} or bigger!</small>
+          </span>
+            </div>
+            <!--              Price end!!! -->
+            </form>
+
+          </div>
           <p>Movie duration: {{minutes}} min</p>
           <p>Free seats: {{movie.qyt}}</p>
-          <p>Price: {{movie.price}}</p>
           <div>
             <form @submit.prevent="createTickets" v-if="user && !user.is_staff">
               <div class="row form-group">
-                <div class="col-md-6" v-bind:class="{ 'fld-error': $v.form.qt.$error }">
+                <div class="col-md-6" v-bind:class="{ 'fld-error': $v.form_buy.qt.$error }">
                   <div class="md-form mb-0">
                     <label for="qt" class="sr-only">Qt</label>
                     <input id="qt" type="number" class="form-control" placeholder="Qt"
-                           v-model="form.qt" @input="$v.form.qt.$touch">
+                           v-model="form_buy.qt" @input="$v.form_buy.qt.$touch">
                   </div>
-                  <span class="msg-error" v-if="!$v.form.qt.required">
+                  <span class="msg-error" v-if="!$v.form_buy.qt.required">
                   <small>This field is required!</small>
                 </span>
-                  <span class="msg-error" v-if="!$v.form.qt.minValue">
-            <small>Qt. could be {{ $v.form.qt.$params.minValue.min }} or bigger!</small>
+                  <span class="msg-error" v-if="!$v.form_buy.qt.minValue">
+            <small>Qt. could be {{ $v.form_buy.qt.$params.minValue.min }} or bigger!</small>
           </span>
                 </div>
               </div>
@@ -73,7 +121,7 @@ import axios from "axios";
 import Header from "@/components/Header";
 import movie_detail from "@/layouts/movie_detail";
 import Aside from "@/components/Aside";
-import {minValue, required} from "vuelidate/lib/validators";
+import {minLength, minValue, required} from "vuelidate/lib/validators";
 
 export default {
   components: {
@@ -83,7 +131,6 @@ export default {
 
   layout: "movie_detail",
   async asyncData({params}) {
-    console.log(params)
     const movie = await axios.get(`http://127.0.0.1:8000/api/movie/${params.id}`);
     const tags = await axios.get(`http://127.0.0.1:8000/api/tags/`);
     const lastFive = await axios.get(`http://127.0.0.1:8000/api/last_five/`);
@@ -91,20 +138,31 @@ export default {
     let end = (movie.data.end_datetime);
     let milliseconds = ((new Date(end)) - (new Date(start)));
     let minutes = milliseconds / (60000);
+    let tz = new Date(movie.data.start_datetime)
+    console.log(new Date(movie.data.start_datetime).s)
+    console.log(movie.data.start_datetime)
+    console.log(new Date(tz.getTime() - tz.getTimezoneOffset() * 60000))
     return {
       movie: movie.data,
       tags: tags.data,
       lastFive: lastFive.data,
       minutes: minutes,
       message: movie.data.movie,
-      form: {
+      form_buy: {
         qt: 1
-      }
+      },
+      form: {
+        start_datetime: new Date(movie.data.start_datetime).toISOString().slice(0, -8),
+        end_datetime: new Date(movie.data.end_datetime).toISOString().slice(0, -8),
+        price: 0,
+
+      },
     }
   },
   data() {
     return{
-      message: 'a'
+      message: 'a',
+
     }
   },
   computed: {
@@ -125,7 +183,7 @@ export default {
         let response = await this.$axios.post('/ticket/', {
           customer: this.user.id,
           movie: this.movie.id,
-          qt: this.form.qt
+          qt: this.form_buy.qt
         }).then(response => {
           console.log(response)
         })
@@ -137,13 +195,41 @@ export default {
     }
   },
   validations: {
-    form: {
+    form_buy: {
       qt: {
         required,
         minValue: minValue(1)
       }
+    },
+      form: {
+        movie: {
+          required,
+          minLength: minLength(2)
+        },
+        hall: {
+          required,
+        },
+        start_datetime: {
+          required
+        },
+        end_datetime: {
+          required
+        },
+        price: {
+          required,
+          minValue: minValue(1)
+        },
+        tag: {
+          required
+        },
+        description: {
+          required,
+          minLength: minLength(20)
+
+        },
+
+      }
     }
-  }
 
 }
 </script>

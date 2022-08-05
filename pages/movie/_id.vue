@@ -105,9 +105,9 @@
                         :disabled='!isCompleted'>Buy</button>
               </div>
             </form>
-            <div class="text-center text-md-left mt-3" v-if="user && user.is_staff">
-              <nuxt-link :to="`/movie_for_update/${movie.slug}`">
-                <button class="btn btn-primary" type="submit">Change movie</button>
+            <div class="text-center text-md-left mt-3">
+              <nuxt-link :to="`/all_seances_of_this_movie/${movie.slug}`">
+                <button class="btn btn-primary" type="submit">All seances of this movie</button>
               </nuxt-link>
             </div>
 

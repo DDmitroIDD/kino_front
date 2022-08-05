@@ -29,7 +29,7 @@ export const actions = {
   async loadSlugMovies({commit}, {query_page, slug_param}) {
   let page = query_page !== undefined ? `?page=${query_page}` : '';
   console.log(slug_param)
-  const {data} = await this.$axios.get(`/movie_for_update/${slug_param}/${page}`);
+  const {data} = await this.$axios.get(`/all_seances_of_this_movie/${slug_param}/${page}`);
   let next = data.next != null ? data.next.split('/')[5] : data.next;
   let previous = data.previous != null ? data.previous.split('/')[5] : data.previous;
   let current_page = query_page

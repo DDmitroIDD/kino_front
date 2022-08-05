@@ -27,8 +27,10 @@
       </form>
       <client-only>
         <span class="navbar-text mr-2" v-if="user">
+          <nuxt-link :to="`/profile`">
           <img class="d-flex mr-3 rounded-circle" :src="user.avatar" width="40" height="40" alt="AVATAR">
           {{ user.username }}
+            </nuxt-link>
         </span>
 
         <span class=" mr-2" v-if="user && user.is_staff">

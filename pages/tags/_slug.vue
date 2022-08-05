@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Header :slug=title />
+<!--    <Header :slug=title />-->
       <div class="container">
         <p class="my-3">Others tags:
         <nuxt-link :to="`${tag.name}`" class="badge badge-success mr-1"
@@ -44,7 +44,7 @@
         </span>
         <nuxt-link v-if="next != null" class="page-link" :to="next">Next</nuxt-link>
         <li v-else class="page-item disabled">
-          <nuxt-link class="page-link" :to="next">Next</nuxt-link>
+          <a class="page-link" href="#">Next</a>
         </li>
       </ul>
     </nav>
@@ -52,37 +52,26 @@
 </template>
 
 <script>
-import axios from "axios";
 import Header from "@/components/Header";
+import {mapState} from "vuex";
 
 export default {
-  components: {Header},
+  // components: {Header},
   Layout: "movie_detail",
-  async asyncData({params, route}) {
-    const { data } = await axios.get(`http://127.0.0.1:8000/api/tags/${params.slug}/`);
-    const tags = await axios.get(`http://127.0.0.1:8000/api/tags/`);
-    let query_page = route.query.page
-    let page = query_page !== undefined ? `?page=${query_page}` : '';
-    let next = data.next != null ? data.next.split('/')[5] : data.next;
-    let previous = data.previous != null ? data.previous.split('/')[5] : data.previous;
-    let current_page = query_page
-    console.log(data)
-    console.log(next)
-    console.log(Number(current_page))
-    return {
-      movies: data.results,
-      title: `#${params.slug}`,
-      tags: tags.data,
-      page: page,
-      next: next,
-      previous: previous,
-      current_page: Number(current_page),
-      total: Math.ceil(data.count / 8)
+  watchQuery: ['page'],
+  computed: {
+    ...mapState('tags/_slug', ["movies", "slug", "tags", "current_page", "next", "total", "previous"])
+  },
+  async fetch({store, route}) {
 
-    }
+    await store.dispatch('tags/_slug/loadAllTagMovies', {
+      tag_param: route.params.slug,
+      query_page: route.query.page
+    })
 
   },
-}
+
+  }
 </script>
 
 <style scoped>

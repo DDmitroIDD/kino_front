@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="user && user.is_staff">
     <div>
       <Header :head_for_feet="message" />
     </div>
@@ -81,6 +81,9 @@
                 <span class="msg-error" v-if="!$v.form.price.required">
                   <small>This field is required!</small>
                 </span>
+                <span class="msg-error" v-if="!$v.form.price.minValue">
+            <small>Price could be {{ $v.form.price.$params.minValue.min }} or bigger!</small>
+          </span>
               </div>
 <!--              Price end!!! -->
 <!--              Image start!!! -->
@@ -136,11 +139,14 @@
       </div>
     </div>
   </div>
+  <div v-else>
+    <Header :head_for_feet="perm_mess" />
+  </div>
 </template>
 
 <script>
 import Header from "@/components/Header";
-import { required, minLength, integer, } from 'vuelidate/lib/validators';
+import { required, minLength, minValue, } from 'vuelidate/lib/validators';
 import { mapState } from 'vuex';
 import axios from "axios";
 
@@ -151,7 +157,6 @@ export default {
   async asyncData() {
     try {
       const {data} = await axios.get('http://localhost:8000/api/cinema/');
-      console.log(data)
       return {
         halls: data,
       }
@@ -166,6 +171,7 @@ export default {
   data() {
     return {
       message: this.message ? this.message : 'Fill the form!',
+      perm_mess: 'You do not have permission for this page!',
       form: {
         movie: '',
         hall: '',
@@ -186,6 +192,9 @@ export default {
     isCompleted() {
       return !this.$v.$invalid;
     },
+    user(){
+      return this.$auth.user
+    }
 
 
   },
@@ -208,12 +217,13 @@ export default {
             {'content-type': 'multipart/form-data'}
         }).then(response => {
           this.message = 'You are created a new movie seance!'
+          console.log(response)
+          let movieId = response.data.id
+          this.$router.push(`movie/${movieId}`)
         })
-        console.log(response)
-        await this.$router.push('/create_movie_seance/')
-
       }catch (err) {
-        this.message = err.response.data.detail
+        this.message = Object.values(err.response.data)[0]
+        console.log(err.response.data)
         console.log(err)
       }
     },
@@ -225,7 +235,7 @@ export default {
     form: {
       movie: {
         required,
-        minLength: minLength(5)
+        minLength: minLength(2)
       },
       hall: {
         required,
@@ -237,7 +247,8 @@ export default {
         required
       },
       price: {
-        required
+        required,
+        minValue: minValue(1)
       },
       tag: {
         required

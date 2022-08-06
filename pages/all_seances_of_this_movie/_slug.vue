@@ -50,10 +50,10 @@ import { mapState } from 'vuex';
 export default {
   watchQuery: ['page'],
   computed: {
-    ...mapState('movie_for_update/_slug', ['movies', 'total', 'next', 'previous', 'current_page'])
+    ...mapState('all_seances_of_this_movie/_slug', ['movies', 'total', 'next', 'previous', 'current_page'])
   },
   async fetch({store, route}) {
-    await store.dispatch('movie_for_update/_slug/loadSlugMovies', {
+    await store.dispatch('all_seances_of_this_movie/_slug/loadSlugMovies', {
       query_page: route.query.page,
       slug_param: route.params.slug
     })

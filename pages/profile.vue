@@ -13,7 +13,7 @@
           <img class="fluid" width="200" height="300" :src="user.avatar" alt="Avatar">
           <p class="font-weight-bold">Money spent: {{user.money_spent}}</p>
           <hr>
-          <div class="bg-info clearfix font-weight-bold container" v-for="ticket in tickets">
+          <div class="bg-info clearfix font-weight-bold container" v-for="ticket in tickets" key="ticket.id">
             <div class="row">
               <div class="col-mb-12">
                 <img style="float:left;width:200px;height:300px;margin-top:5px;margin-bottom:5px"
@@ -26,9 +26,10 @@
                 <p class="text-center" style="margin-bottom: 3px">End movie: {{ticket.movie.end_datetime.slice(11, 16)}}</p>
                 <p class="text-center" style="margin-bottom: 3px">Price: {{ticket.movie.price}}</p>
                 <p class="text-center" style="margin-bottom: 3px">Qt: {{ticket.qt}}</p>
-                <p class="text-center" style="margin-bottom: 3px">Sum: {{ticket.spent}}</p>
+                <p class="text-center" style="margin-bottom: 3px">Sum: {{ticket.qt * ticket.movie.price}}</p>
               </div>
             </div>
+            <hr>
           </div>
         </div>
       </div>
@@ -42,11 +43,15 @@
   import {mapState} from "vuex";
 
   export default {
+    components: {
+      Header
+    },
     watchQuery: ['page'],
     computed: {
-      ...mapState("profile/profile", ['tickets', 'total', 'next', 'previous', 'current_page']),
-      movie(tickets){
-
+      ...mapState("profile/profile", ['tickets', 'total', 'next', 'previous', 'current_page', 'count']),
+      message(count) {
+        console.log(count.count)
+        return `You have ${count.count} orders!`
       },
       user(){
         return this.$auth.user
